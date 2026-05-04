@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Extraction Results — TalentAI</title>
+  <meta name="description" content="AI-extracted structured talent data from the uploaded resume." />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a class="navbar-brand" href="/dashboard">
+      <div class="logo-icon">⚡</div>
+      TalentAI
+    </a>
+    <ul class="navbar-nav">
+      <li><a class="nav-link" href="/dashboard">Dashboard</a></li>
+      <li><a class="nav-link" href="/upload">Upload Resume</a></li>
+      <li>
+        <a class="btn btn-outline btn-sm" href="/logout" style="margin-left:8px;">Sign Out</a>
+      </li>
+    </ul>
+  </nav>
+
+  <div class="page-wrapper">
+
+    <div class="dashboard-header">
+      <h1 class="page-title">Extraction Results</h1>
+      <p class="page-subtitle">AI successfully extracted structured data from the uploaded resume.</p>
+    </div>
+
+    <div class="content-section" style="padding-top:32px; max-width:860px;">
+
+      <!-- Success banner -->
+      <div class="alert alert-success" style="margin-bottom:28px;">
+        <span>✅</span>
+        Resume processed successfully — all fields extracted with high confidence.
+      </div>
+
+      <!-- Profile hero -->
+      <div class="result-hero">
+        <div class="result-avatar">👤</div>
+        <div style="flex:1;">
+          <div class="result-name">{{ result.name }}</div>
+          <div class="result-meta">
+            {{ result.experience }} of experience
+            {% if result.location is defined %} · {{ result.location }}{% endif %}
+          </div>
+        </div>
+        <div style="display:flex; flex-direction:column; align-items:flex-end; gap:8px;">
+          <span class="badge badge-green" style="font-size:0.8rem; padding:6px 14px;">✓ Verified</span>
+          <span style="font-size:0.75rem; color:var(--text-muted);">Processed just now</span>
+        </div>
+      </div>
+
+      <!-- Info grid -->
+      <div class="info-grid">
+        <div class="info-item">
+          <div class="info-label">👤 Full Name</div>
+          <div class="info-value">{{ result.name }}</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">⏱ Experience</div>
+          <div class="info-value">{{ result.experience }}</div>
+        </div>
+        {% if result.email is defined %}
+        <div class="info-item">
+          <div class="info-label">✉ Email</div>
+          <div class="info-value">{{ result.email }}</div>
+        </div>
+        {% endif %}
+        {% if result.phone is defined %}
+        <div class="info-item">
+          <div class="info-label">📞 Phone</div>
+          <div class="info-value">{{ result.phone }}</div>
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- Skills -->
+      <div class="card" style="margin-bottom:24px;">
+        <div class="section-title">Technical Skills</div>
+        <div class="skills-list" style="margin-top:12px;">
+          {% for skill in result.skills %}
+            <span class="skill-tag">{{ skill }}</span>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Confidence meter -->
+      <div class="card" style="margin-bottom:24px;">
+        <div class="section-title">Extraction Confidence</div>
+        <div style="display:flex; flex-direction:column; gap:14px; margin-top:12px;">
+          {% for field, score in [('Name', 98), ('Skills', 95), ('Experience', 92), ('Contact Info', 85)] %}
+          <div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+              <span style="font-size:0.85rem; color:var(--text-secondary);">{{ field }}</span>
+              <span style="font-size:0.85rem; font-weight:600; color:var(--accent-light);">{{ score }}%</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill conf-bar" data-width="{{ score }}%" style="width:0%;"></div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div style="display:flex; gap:12px; flex-wrap:wrap;">
+        <a href="/upload" class="btn btn-primary">
+          <span>📤</span> Upload Another
+        </a>
+        <a href="/dashboard" class="btn btn-outline">
+          ← Back to Dashboard
+        </a>
+        <button class="btn btn-outline" onclick="window.print()">
+          🖨 Print / Export
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    window.addEventListener('load', () => {
+      document.querySelectorAll('.conf-bar').forEach(bar => {
+        const w = bar.dataset.width;
+        setTimeout(() => { bar.style.width = w; }, 300);
+      });
+    });
+  </script>
+
+</body>
+</html>

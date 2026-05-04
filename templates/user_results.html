@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Resume Score — TalentAI</title>
+  <meta name="description" content="Detailed resume scoring breakdown." />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body class="scoring-layout">
+
+  <!-- Sidebar -->
+  <aside class="scoring-sidebar">
+    <div class="sidebar-header">
+      <a href="/dashboard" class="btn btn-outline btn-sm" style="color:white; border-color:rgba(255,255,255,0.2);">← Dashboard</a>
+    </div>
+
+    <div class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-heading">IMPACT</div>
+        <ul>
+          <li class="active"><div class="dot"></div> Quantifying impact</li>
+          <li><div class="dot"></div> Strong action verbs</li>
+          <li><div class="dot"></div> No spelling errors</li>
+        </ul>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-heading">BREVITY</div>
+        <ul>
+          <li><div class="dot"></div> Length check</li>
+          <li><div class="dot"></div> Concise bullet points</li>
+        </ul>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-heading">STYLE</div>
+        <ul>
+          <li><div class="dot"></div> Active voice</li>
+          <li><div class="dot"></div> Consistent tense</li>
+        </ul>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-heading">SKILLS</div>
+        <ul>
+          <li><div class="dot"></div> Tech stack matching</li>
+          <li><div class="dot"></div> Soft skills</li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="scoring-main">
+    
+    <!-- Top Card -->
+    <div class="score-top-card">
+      <div class="overall-score-section">
+        <div class="circular-chart-container">
+          <!-- Simplified CSS Circle -->
+          <svg viewBox="0 0 36 36" class="circular-chart orange">
+            <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+            <path class="circle" stroke-dasharray="78, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+            <text x="18" y="17" class="percentage">{{ result.scores.overall }}</text>
+            <text x="18" y="24" class="label">Overall Score</text>
+          </svg>
+        </div>
+        <div class="score-text">
+          <h2>Your resume scored {{ result.scores.overall }} out of 100.</h2>
+          <div class="skeleton-line"></div>
+          <div class="skeleton-line short"></div>
+        </div>
+      </div>
+      
+      <div class="resume-preview">
+        <div class="preview-doc">
+          <div class="preview-header">{{ result.name }}</div>
+          <div class="preview-lines">
+            <div class="line w-100"></div>
+            <div class="line w-80"></div>
+            <br>
+            <div class="line w-90"></div>
+            <div class="line w-100"></div>
+            <div class="line w-70"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Breakdown Section -->
+    <h3 class="breakdown-title">BREAKDOWN</h3>
+    <div class="breakdown-tabs">
+      <div class="tab active">
+        <div class="tab-title">IMPACT</div>
+        <div class="tab-score">{{ result.scores.impact }}/<span class="muted">100</span></div>
+        <div class="tab-badge excellent">EXCELLENT</div>
+      </div>
+      <div class="tab">
+        <div class="tab-title">BREVITY</div>
+        <div class="tab-score">{{ result.scores.brevity }}/<span class="muted">100</span></div>
+        <div class="tab-badge average">AVERAGE</div>
+      </div>
+      <div class="tab">
+        <div class="tab-title">STYLE</div>
+        <div class="tab-score">{{ result.scores.style }}/<span class="muted">100</span></div>
+        <div class="tab-badge very-good">VERY GOOD</div>
+      </div>
+      <div class="tab">
+        <div class="tab-title">SOFT SKILLS</div>
+        <div class="tab-score">{{ result.scores.soft_skills }}/<span class="muted">100</span></div>
+        <div class="tab-badge excellent">EXCELLENT</div>
+      </div>
+    </div>
+
+    <!-- Breakdown Details -->
+    <div class="breakdown-details">
+      <div class="detail-score-circle">
+        <svg viewBox="0 0 36 36" class="circular-chart green">
+          <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+          <path class="circle" stroke-dasharray="{{ result.scores.impact }}, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+          <text x="18" y="18" class="percentage">{{ result.scores.impact }}</text>
+          <text x="18" y="24" class="label">Impact Score</text>
+        </svg>
+      </div>
+
+      <div class="detail-checklist">
+        <div class="check-item">
+          <span class="check-icon">✓</span>
+          <div class="check-content">
+            <div class="check-title">Quantifying impact</div>
+            <div class="skeleton-line short"></div>
+          </div>
+        </div>
+        <div class="check-item">
+          <span class="check-icon">✓</span>
+          <div class="check-content">
+            <div class="check-title">Unique action verbs</div>
+          </div>
+        </div>
+        <div class="check-item">
+          <span class="check-icon">✓</span>
+          <div class="check-content">
+            <div class="check-title">Strong action verbs</div>
+            <div class="skeleton-line short"></div>
+          </div>
+        </div>
+        <div class="check-item">
+          <span class="check-icon">✓</span>
+          <div class="check-content">
+            <div class="check-title">Accomplishment-oriented language</div>
+            <div class="skeleton-line short"></div>
+          </div>
+        </div>
+        <div class="check-item">
+          <span class="check-icon">✓</span>
+          <div class="check-content">
+            <div class="check-title">No spelling errors</div>
+            <div class="skeleton-line short"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</body>
+</html>

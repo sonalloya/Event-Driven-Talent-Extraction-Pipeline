@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create Account — TalentAI</title>
+  <meta name="description" content="Create your free TalentAI account and start extracting talent data in seconds." />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+
+  <div class="auth-wrapper">
+    <div class="auth-card">
+
+      <!-- Logo -->
+      <div class="auth-logo">
+        <div class="auth-logo-icon">⚡</div>
+        <div>
+          <div class="auth-title">Create account</div>
+          <div class="auth-subtitle">Join TalentAI — it's free</div>
+        </div>
+      </div>
+
+      <!-- Register Form -->
+      <form id="registerForm" action="/register" method="POST" novalidate>
+
+        <div class="form-group">
+          <label class="form-label" for="reg-name">Full Name</label>
+          <div class="input-icon-wrap">
+            <span class="input-icon">👤</span>
+            <input
+              id="reg-name"
+              class="form-control"
+              type="text"
+              name="name"
+              placeholder="Jane Smith"
+              required
+              autocomplete="name"
+            />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="reg-email">Work Email</label>
+          <div class="input-icon-wrap">
+            <span class="input-icon">✉</span>
+            <input
+              id="reg-email"
+              class="form-control"
+              type="email"
+              name="email"
+              placeholder="jane@company.com"
+              required
+              autocomplete="email"
+            />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="reg-password">Password</label>
+          <div class="input-icon-wrap">
+            <span class="input-icon">🔒</span>
+            <input
+              id="reg-password"
+              class="form-control"
+              type="password"
+              name="password"
+              placeholder="Min 8 characters"
+              required
+              minlength="8"
+              autocomplete="new-password"
+            />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="reg-role">Role</label>
+          <div class="input-icon-wrap">
+            <span class="input-icon">👥</span>
+            <select
+              id="reg-role"
+              class="form-control"
+              name="role"
+              required
+            >
+              <option value="user">Normal User</option>
+              <option value="admin">Admin (HR)</option>
+            </select>
+          </div>
+        </div>
+
+        <button id="regBtn" class="btn btn-primary" type="submit">
+          <span id="regBtnText">Create Account</span>
+          <div id="regSpinner" class="spinner" style="display:none;"></div>
+        </button>
+
+      </form>
+
+      <div class="divider">or</div>
+
+      <div class="auth-footer">
+        Already have an account?
+        <a href="/">Sign in instead →</a>
+      </div>
+
+      <p style="text-align:center; font-size:0.75rem; color:var(--text-muted); margin-top:16px;">
+        By creating an account you agree to our Terms of Service and Privacy Policy.
+      </p>
+
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('registerForm').addEventListener('submit', function() {
+      document.getElementById('regBtnText').textContent = 'Creating account…';
+      document.getElementById('regSpinner').style.display = 'block';
+      document.getElementById('regBtn').disabled = true;
+    });
+  </script>
+
+</body>
+</html>

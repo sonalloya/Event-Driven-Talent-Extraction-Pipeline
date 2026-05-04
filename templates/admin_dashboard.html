@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard — TalentAI</title>
+  <meta name="description" content="TalentAI HR Dashboard — view extracted talent data and upload new resumes." />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a class="navbar-brand" href="/dashboard">
+      <div class="logo-icon">⚡</div>
+      TalentAI
+    </a>
+    <ul class="navbar-nav">
+      <li><a class="nav-link active" href="/dashboard">Dashboard</a></li>
+      <li>
+        <a class="btn btn-outline btn-sm" href="/logout" style="margin-left:8px;">
+          Sign Out
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <div class="page-wrapper">
+
+    <!-- Header -->
+    <div class="dashboard-header">
+      <h1 class="page-title">HR Dashboard</h1>
+      <p class="page-subtitle">Welcome back, {{ session.get('user', 'HR Manager') }} — here's your talent overview.</p>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card anim-delay-1">
+        <div class="stat-icon purple">📄</div>
+        <div>
+          <div class="stat-value">{{ total_processed }}</div>
+          <div class="stat-label">Resumes Processed</div>
+          <div class="progress-bar" style="margin-top:10px;">
+            <div class="progress-fill" style="width:78%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stat-card anim-delay-2">
+        <div class="stat-icon teal">🎯</div>
+        <div>
+          <div class="stat-value">94%</div>
+          <div class="stat-label">Extraction Accuracy</div>
+          <div class="progress-bar" style="margin-top:10px;">
+            <div class="progress-fill" style="width:94%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stat-card anim-delay-3">
+        <div class="stat-icon green">✅</div>
+        <div>
+          <div class="stat-value">41</div>
+          <div class="stat-label">Profiles Shortlisted</div>
+          <div class="progress-bar" style="margin-top:10px;">
+            <div class="progress-fill" style="width:32%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stat-card anim-delay-4">
+        <div class="stat-icon amber">⚡</div>
+        <div>
+          <div class="stat-value">2.3s</div>
+          <div class="stat-label">Avg. Processing Time</div>
+          <div class="progress-bar" style="margin-top:10px;">
+            <div class="progress-fill" style="width:55%;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content-section">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; flex-wrap:wrap;">
+
+        <!-- Quick Actions -->
+        <div class="card">
+          <div class="section-title">Quick Actions</div>
+          <div style="display:flex; flex-direction:column; gap:12px; margin-top:8px;">
+            <button id="searchBtn" class="btn btn-outline" style="justify-content:flex-start; gap:12px;">
+              <span>🔍</span> Search Talent Pool
+            </button>
+            <a href="/export" class="btn btn-outline" style="justify-content:flex-start; gap:12px;">
+              <span>📊</span> Export Reports
+            </a>
+          </div>
+        </div>
+
+        <!-- System Status -->
+        <div class="card">
+          <div class="section-title">System Status</div>
+          <div style="display:flex; flex-direction:column; gap:14px; margin-top:8px;">
+
+            <div style="display:flex; align-items:center; justify-content:space-between;">
+              <span style="font-size:0.875rem; color:var(--text-secondary);">🗄 Storage Service</span>
+              <span class="badge badge-green">● Operational</span>
+            </div>
+
+            <div style="display:flex; align-items:center; justify-content:space-between;">
+              <span style="font-size:0.875rem; color:var(--text-secondary);">🤖 AI Extraction Engine</span>
+              <span class="badge badge-green">● Operational</span>
+            </div>
+
+            <div style="display:flex; align-items:center; justify-content:space-between;">
+              <span style="font-size:0.875rem; color:var(--text-secondary);">📡 Event Bus</span>
+              <span class="badge badge-green">● Operational</span>
+            </div>
+
+            <div style="display:flex; align-items:center; justify-content:space-between;">
+              <span style="font-size:0.875rem; color:var(--text-secondary);">📬 Notification Queue</span>
+              <span class="badge badge-amber">● Degraded</span>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Recent Activity -->
+      <div class="card" style="margin-top:24px;">
+        
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div class="section-title" style="margin:0;">Recent Activity</div>
+          
+          <!-- Hidden Search Input -->
+          <div id="searchContainer" style="display:none; flex:1; max-width:300px; position:relative;">
+            <span style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--text-muted);">🔍</span>
+            <input type="text" id="searchInput" placeholder="Search skills, names, emails..." class="form-control" style="padding-left:36px; background:rgba(0,0,0,0.1); border:1px solid var(--border);">
+          </div>
+        </div>
+
+        <div style="overflow-x:auto; margin-top:16px;">
+          <table style="width:100%; border-collapse:collapse; font-size:0.875rem;">
+            <thead>
+              <tr style="border-bottom:1px solid var(--border);">
+                <th style="text-align:left; padding:10px 12px; color:var(--text-muted); font-weight:600; text-transform:uppercase; font-size:0.75rem; letter-spacing:0.05em;">File</th>
+                <th style="text-align:left; padding:10px 12px; color:var(--text-muted); font-weight:600; text-transform:uppercase; font-size:0.75rem; letter-spacing:0.05em;">Candidate</th>
+                <th style="text-align:left; padding:10px 12px; color:var(--text-muted); font-weight:600; text-transform:uppercase; font-size:0.75rem; letter-spacing:0.05em;">Uploaded By</th>
+                <th style="text-align:left; padding:10px 12px; color:var(--text-muted); font-weight:600; text-transform:uppercase; font-size:0.75rem; letter-spacing:0.05em;">Skills</th>
+                <th style="text-align:left; padding:10px 12px; color:var(--text-muted); font-weight:600; text-transform:uppercase; font-size:0.75rem; letter-spacing:0.05em;">Status</th>
+                <th style="text-align:left; padding:10px 12px; color:var(--text-muted); font-weight:600; text-transform:uppercase; font-size:0.75rem; letter-spacing:0.05em;">Date</th>
+                <th style="text-align:right; padding:10px 12px; color:var(--text-muted); font-weight:600; text-transform:uppercase; font-size:0.75rem; letter-spacing:0.05em;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="activityTableBody">
+              {% for row in recent_activity %}
+              <tr style="border-bottom:1px solid var(--border); transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.03)'" onmouseout="this.style.background='transparent'">
+                <td style="padding:12px; color:var(--text-secondary); font-family:'JetBrains Mono',monospace; font-size:0.8rem;">
+                  <a href="/resume/{{ row.id }}" style="color:var(--accent-light); text-decoration:none; font-weight:600;">{{ row.file }}</a>
+                </td>
+                <td style="padding:12px; color:var(--text-primary); font-weight:500;">{{ row.name }}</td>
+                <td style="padding:12px; color:var(--text-secondary); font-size:0.8rem;">{{ row.uploaded_by }}</td>
+                <td style="padding:12px; color:var(--text-secondary);">{{ row.skills }}</td>
+                <td style="padding:12px;">
+                  {% if row.status == 'Done' %}
+                    <span class="badge badge-green">✓ Done</span>
+                  {% elif row.status == 'Processing' %}
+                    <span class="badge badge-teal">⟳ Processing</span>
+                  {% else %}
+                    <span class="badge badge-amber">⏳ Queued</span>
+                  {% endif %}
+                </td>
+                <td style="padding:12px; color:var(--text-muted); font-size:0.8rem;">{{ row.date }}</td>
+                <td style="padding:12px; text-align:right;">
+                  <a href="/resume/{{ row.id }}" class="btn btn-outline" style="padding:4px 10px; font-size:0.75rem; min-width:0; display:inline-flex; align-items:center;">👁 View</a>
+                  <form action="/delete/{{ row.id }}" method="POST" style="display:inline; margin-left:8px;" onsubmit="return confirm('Are you sure you want to delete this resume?');">
+                    <button type="submit" class="btn" style="padding:4px 10px; font-size:0.75rem; min-width:0; background:transparent; color:#ef4444; border:1px solid rgba(239, 68, 68, 0.3);">🗑 Delete</button>
+                  </form>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // Animate progress bars on load
+    window.addEventListener('load', () => {
+      document.querySelectorAll('.progress-fill').forEach(bar => {
+        const w = bar.style.width;
+        bar.style.width = '0';
+        setTimeout(() => { bar.style.width = w; }, 200);
+      });
+    });
+
+    // Search Functionality
+    const searchBtn = document.getElementById('searchBtn');
+    const searchContainer = document.getElementById('searchContainer');
+    const searchInput = document.getElementById('searchInput');
+    const activityRows = document.querySelectorAll('#activityTableBody tr');
+
+    searchBtn.addEventListener('click', () => {
+      if (searchContainer.style.display === 'none') {
+        searchContainer.style.display = 'block';
+        searchInput.focus();
+      } else {
+        searchContainer.style.display = 'none';
+        searchInput.value = '';
+        activityRows.forEach(row => row.style.display = '');
+      }
+    });
+
+    searchInput.addEventListener('keyup', (e) => {
+      const term = e.target.value.toLowerCase();
+      activityRows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(term) ? '' : 'none';
+      });
+    });
+  </script>
+
+</body>
+</html>

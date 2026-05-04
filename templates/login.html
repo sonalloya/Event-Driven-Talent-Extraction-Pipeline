@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign In — TalentAI</title>
+  <meta name="description" content="Sign in to TalentAI — Event-Driven Talent Extraction System" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+
+  <div class="auth-wrapper">
+    <div class="auth-card">
+
+      <!-- Logo -->
+      <div class="auth-logo">
+        <div class="auth-logo-icon">⚡</div>
+        <div>
+          <div class="auth-title">Welcome back</div>
+          <div class="auth-subtitle">Sign in to TalentAI platform</div>
+        </div>
+      </div>
+
+      <!-- Flash messages -->
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for cat, msg in messages %}
+            <div class="alert alert-{{ 'error' if cat == 'danger' else cat }}">
+              <span>⚠</span> {{ msg }}
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      <!-- Login Form -->
+      <form id="loginForm" action="/login" method="POST" novalidate>
+
+        <div class="form-group">
+          <label class="form-label" for="email">Email Address</label>
+          <div class="input-icon-wrap">
+            <span class="input-icon">✉</span>
+            <input
+              id="email"
+              class="form-control"
+              type="email"
+              name="email"
+              placeholder="you@company.com"
+              required
+              autocomplete="email"
+            />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="password">Password</label>
+          <div class="input-icon-wrap">
+            <span class="input-icon">🔒</span>
+            <input
+              id="password"
+              class="form-control"
+              type="password"
+              name="password"
+              placeholder="Enter your password"
+              required
+              autocomplete="current-password"
+            />
+          </div>
+        </div>
+
+        <button id="loginBtn" class="btn btn-primary" type="submit">
+          <span id="loginBtnText">Sign In</span>
+          <div id="loginSpinner" class="spinner" style="display:none;"></div>
+        </button>
+
+      </form>
+
+      <div class="divider">or</div>
+
+      <div class="auth-footer">
+        Don't have an account?
+        <a href="/register">Create one for free →</a>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', function() {
+      document.getElementById('loginBtnText').textContent = 'Signing in…';
+      document.getElementById('loginSpinner').style.display = 'block';
+      document.getElementById('loginBtn').disabled = true;
+    });
+  </script>
+
+</body>
+</html>
